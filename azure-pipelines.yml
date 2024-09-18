@@ -1,14 +1,9 @@
 trigger:
-  - 'None'
+  - '*'
 
 pool:
   name: 'Self-hosted'
-parameters:
-  - name: SourceBranch
-    default: ' '
-    type: string
- 
- 
+
 variables:
   - group: ServicePrincipalSecrets
 
@@ -38,7 +33,7 @@ steps:
         az extension add --name azure-devops
         
         # Extract the branch name by trimming 'refs/heads/' prefix from Build.SourceBranch
-        $sourceBranch = "${{ parameters.SourceBranch }}"
+        $sourceBranch = "$(Build.SourceBranch)"
         $sourceBranch = $sourceBranch -replace '^refs/heads/', ''
         
         $targetBranch = "master"
