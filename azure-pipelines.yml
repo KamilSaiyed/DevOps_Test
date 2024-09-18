@@ -16,5 +16,5 @@ steps:
       scriptLocation: 'inlineScript'
       inlineScript: |
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository $(Build.Repository.Name) --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
