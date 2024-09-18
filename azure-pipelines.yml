@@ -34,7 +34,12 @@ steps:
         
         # Dynamically get the source branch name
         $sourceBranch = "$(Build.SourceBranchName)"
+        $targetBranch = "master"
+
+        # Log the branch names for verification
+        echo "Source Branch: $sourceBranch"
+        echo "Target Branch: $targetBranch"
 
         # Create a pull request dynamically from the triggered branch
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch $sourceBranch --target-branch master --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch $sourceBranch --target-branch $targetBranch --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
