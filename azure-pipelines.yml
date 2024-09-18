@@ -35,8 +35,8 @@ steps:
         # Configure Azure DevOps CLI defaults
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
         
-        # Generate a unique title for the pull request using timestamp
-        PR_TITLE="Automated PR for Dummy File - $(date +'%Y-%m-%d %H:%M:%S')"
+        # Generate a unique title for the pull request using PowerShell's Get-Date
+        $PR_TITLE = "Automated PR for Dummy File - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')"
         
         # Create a pull request in Azure DevOps with a unique title
         az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "$PR_TITLE" --description "This PR was created by the pipeline."
