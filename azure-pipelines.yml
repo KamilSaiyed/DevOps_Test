@@ -2,7 +2,10 @@ trigger:
   - master
 
 pool:
-  name: 'Self-hosted'  # Ensure this is the correct name of your self-hosted agent pool
+  name: 'Self-hosted'
+
+variables:
+  - group: DevOpsCredentials
 
 steps:
   - script: |
@@ -11,8 +14,8 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Replace with the correct service connection name
-      scriptType: 'ps'  # Use 'ps' for PowerShell
+      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'
+      scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
