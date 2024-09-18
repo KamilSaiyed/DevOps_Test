@@ -1,14 +1,13 @@
 trigger:
-  - '*'
+  - 'None'
 
 pool:
   name: 'Self-hosted'
 parameters:
   - name: SourceBranch
-    default: kamilsaiyed/OneBranch_Test
-    values:
-      - kamilsaiyed/OneBranch_Test
-      - kamilsaiyed/OneBranch_Test2
+    default: ' '
+    type: string
+ 
  
 variables:
   - group: ServicePrincipalSecrets
