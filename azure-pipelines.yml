@@ -17,6 +17,7 @@ steps:
        APP_ID: $(APP_ID)
        CLIENT_SECRET: $(CLIENT_SECRET)
        TENANT_ID: $(TENANT_ID)
+       PAT: $(PAT)
     inputs:
       azureSubscription: 'serviceconnection_01'
       scriptType: 'ps'
@@ -31,7 +32,7 @@ steps:
         # Configure Azure DevOps CLI defaults
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
         
-        echo "" | az devops login --organization https://dev.azure.com/kamilsaiyed/
+        echo $PAT | az devops login --organization https://dev.azure.com/kamilsaiyed/
         # Create a pull request in Azure DevOps
         az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
