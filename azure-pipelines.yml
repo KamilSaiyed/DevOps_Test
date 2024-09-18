@@ -3,7 +3,13 @@ trigger:
 
 pool:
   name: 'Self-hosted'
-
+parameters:
+  - name: SourceBranch
+    default: kamilsaiyed/OneBranch_Test
+    values:
+      - kamilsaiyed/OneBranch_Test
+      - kamilsaiyed/OneBranch_Test2
+ 
 variables:
   - group: ServicePrincipalSecrets
 
@@ -33,7 +39,7 @@ steps:
         az extension add --name azure-devops
         
         # Extract the branch name by trimming 'refs/heads/' prefix from Build.SourceBranch
-        $sourceBranch = "$(Build.SourceBranch)"
+        $sourceBranch = "${{ parameters.SourceBranch }}"
         $sourceBranch = $sourceBranch -replace '^refs/heads/', ''
         
         $targetBranch = "master"
