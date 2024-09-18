@@ -2,7 +2,7 @@ trigger:
   - master
 
 pool:
-  name: 'Self-hosted'  # Ensure this is the correct name of your self-hosted agent pool
+  name: 'Self-hosted' 
 
 steps:
   - script: |
@@ -11,10 +11,16 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Replace with the correct service connection name
-      scriptType: 'ps'  # Use 'ps' for PowerShell
+      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'
+      scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
+        # Get Microsoft Entra ID access token
+        $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
+        
+      
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
+        
+       
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline." --detect true
     displayName: 'Create Pull Request'
