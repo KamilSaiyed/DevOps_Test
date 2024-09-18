@@ -5,7 +5,7 @@ pool:
   name: 'Self-hosted'
 
 variables:
-  - group: ServicePrincipalSecrets  # Reference the secure variable group
+  - group: ServicePrincipalSecrets  # Ensure your secret variables are correctly set
 
 steps:
   - script: |
@@ -14,12 +14,15 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Ensure the correct service connection
+      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'
       scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
-        # Login using the service principal credentials stored in secure variables
+        # Login using the service principal credentials
         az login --service-principal -u $(APP_ID) --password $(CLIENT_SECRET) --tenant $(TENANT_ID)
+
+        # Set the correct subscription explicitly
+        az account set --subscription fabd0ca9-f841-4a2e-860b-4ec1267dd6a9
         
         # Configure Azure DevOps CLI defaults
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
