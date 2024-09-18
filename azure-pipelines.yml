@@ -2,7 +2,7 @@ trigger:
   - master
 
 pool:
-  name: 'Self-hosted'  # Ensure this is the correct name of your self-hosted agent pool
+  name: 'Self-hosted'
 
 steps:
   - script: |
@@ -11,16 +11,16 @@ steps:
 
   - task: AzureCLI@2
     inputs:
-      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Replace with the correct service connection name
-      scriptType: 'ps'  # Use 'ps' for PowerShell
+      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Replace with your service connection
+      scriptType: 'ps'
       scriptLocation: 'inlineScript'
       inlineScript: |
-        # Login using the service principal, this step should already be working
-        az login --service-principal -u *** --password *** --tenant 51b13d0d-8794-4b2f-ba85-0d5116abbc07
+        # Login using the service principal credentials
+        az login --service-principal -u b46cc3e1-1ee8-4dc0-98dc-3df3c1a729a6 --password 83299ae5-b094-45c8-9155-1591f2c51a93 --tenant 51b13d0d-8794-4b2f-ba85-0d5116abbc07
         
-        # Configure Azure DevOps defaults
+        # Configure Azure DevOps CLI defaults
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
 
-        # Create the pull request using the authenticated session
+        # Create a pull request in Azure DevOps
         az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
