@@ -1,33 +1,20 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
-- master
+  - master
 
 pool:
-  name: 'Self-hosted'
+  name: 'Self-hosted'  # Ensure this is the correct name of your self-hosted agent pool
 
 steps:
-- task: Maven@4
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.11'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+  - script: |
+      echo "This is a dummy file" > dummy.txt
+    displayName: 'Create Dummy File'
 
-- task: CopyFiles@2
-  inputs:
-    Contents: '**/*.war'
-    TargetFolder: '$(build.artifactstagingdirectory)'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'warfile'
-    publishLocation: 'Container'
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'Azure subscription 1 (fabd0ca9-f841-4a2e-860b-4ec1267dd6a9)'  # Replace with the correct service connection name
+      scriptType: 'ps'  # Use 'ps' for PowerShell
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository $(Build.Repository.Name) --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
+    displayName: 'Create Pull Request'
