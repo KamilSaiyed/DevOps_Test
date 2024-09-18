@@ -15,12 +15,12 @@ steps:
       scriptType: 'ps'  # Use 'ps' for PowerShell
       scriptLocation: 'inlineScript'
       inlineScript: |
-        # Obtain the Microsoft Entra (Azure AD) access token
-        $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query accessToken --output tsv
+        # Login using the service principal, this step should already be working
+        az login --service-principal -u *** --password *** --tenant 51b13d0d-8794-4b2f-ba85-0d5116abbc07
         
-        # Use the token to authenticate with Azure DevOps API or CLI
+        # Configure Azure DevOps defaults
         az devops configure --defaults organization=https://dev.azure.com/kamilsaiyed/ project=KamilSaiyed
-        
-        # Call Azure DevOps CLI to create a pull request using the access token
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline." --detect true --access-token $accessToken
+
+        # Create the pull request using the authenticated session
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch kamilsaiyed/OneBranch_Test --target-branch master --title "Automated Pull Request for Dummy File" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
