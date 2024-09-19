@@ -2,7 +2,7 @@ trigger:
   - 'None'
 
 pool:
-  name: 'Self-hosted'
+  name: 'Azure Pipelines'
 
 variables:
   - group: ServicePrincipalSecrets
