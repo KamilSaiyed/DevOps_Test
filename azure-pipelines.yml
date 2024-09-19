@@ -17,6 +17,7 @@ steps:
       APP_ID: $(APP_ID)
       CLIENT_SECRET: $(CLIENT_SECRET)
       TENANT_ID: $(TENANT_ID)
+      AZURE_DEVOPS_EXT_PAT: $(PAT)
     inputs:
       azureSubscription: 'serviceconnection_01'
       scriptType: 'ps'
