@@ -11,25 +11,16 @@ steps:
   - script: |
       echo "This is a dummy file" > dummy.txt
     displayName: 'Create Dummy File'
-
-  - task: AzureCLI@2
+  - task: Bash@3
     env:
-      APP_ID: $(APP_ID)
-      CLIENT_SECRET: $(CLIENT_SECRET)
-      TENANT_ID: $(TENANT_ID)
+      # APP_ID: $(APP_ID)
+      # CLIENT_SECRET: $(CLIENT_SECRET)
+      # TENANT_ID: $(TENANT_ID)
       AZURE_DEVOPS_EXT_PAT: $(PAT)
-    inputs:
-      azureSubscription: 'serviceconnection_01'
-      scriptType: 'ps'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        # Login using the service principal credentials
-        #az login --service-principal -u $(APP_ID) --password $(CLIENT_SECRET) --tenant $(TENANT_ID)
 
-        # Set the correct subscription explicitly
-        #az account set --subscription fabd0ca9-f841-4a2e-860b-4ec1267dd6a9
-        
-        # Install the Azure DevOps CLI extension
+    inputs:
+      targetType: 'inline'
+      script: |
         az extension add --name azure-devops
         
         # Extract the branch name by trimming 'refs/heads/' prefix from Build.SourceBranch
@@ -45,3 +36,36 @@ steps:
         # Create a pull request dynamically from the triggered branch
         az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch $sourceBranch --target-branch $targetBranch --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
+  # - task: AzureCLI@2
+  #   env:
+  #     APP_ID: $(APP_ID)
+  #     CLIENT_SECRET: $(CLIENT_SECRET)
+  #     TENANT_ID: $(TENANT_ID)
+  #     AZURE_DEVOPS_EXT_PAT: $(PAT)
+  #   inputs:
+  #     azureSubscription: 'serviceconnection_01'
+  #     scriptType: 'ps'
+  #     scriptLocation: 'inlineScript'
+  #     inlineScript: |
+  #       # Login using the service principal credentials
+  #       #az login --service-principal -u $(APP_ID) --password $(CLIENT_SECRET) --tenant $(TENANT_ID)
+
+  #       # Set the correct subscription explicitly
+  #       #az account set --subscription fabd0ca9-f841-4a2e-860b-4ec1267dd6a9
+        
+  #       # Install the Azure DevOps CLI extension
+  #       az extension add --name azure-devops
+        
+  #       # Extract the branch name by trimming 'refs/heads/' prefix from Build.SourceBranch
+  #       $sourceBranch = "$(Build.SourceBranch)"
+  #       $sourceBranch = $sourceBranch -replace '^refs/heads/', ''
+        
+  #       $targetBranch = "master"
+
+  #       # Log the branch names for verification
+  #       echo "Source Branch: $sourceBranch"
+  #       echo "Target Branch: $targetBranch"
+
+  #       # Create a pull request dynamically from the triggered branch
+  #       az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch $sourceBranch --target-branch $targetBranch --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
+  #   displayName: 'Create Pull Request'
