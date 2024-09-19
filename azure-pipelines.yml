@@ -13,9 +13,6 @@ steps:
     displayName: 'Create Dummy File'
   - task: AzureCLI@2
     env:
-      # APP_ID: $(APP_ID)
-      # CLIENT_SECRET: $(CLIENT_SECRET)
-      # TENANT_ID: $(TENANT_ID)
       AZURE_DEVOPS_EXT_PAT: $(PAT)
     inputs:
       azureSubscription: 'serviceconnection_01'
