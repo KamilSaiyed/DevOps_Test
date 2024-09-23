@@ -18,6 +18,13 @@ steps:
         echo "Running az login with AZURE_DEVOPS_EXT_PAT"
         az extension add --name azure-devops
         sourceBranch=$(Build.SourceBranchName)
+        echo "Detected source branch: $sourceBranch"
+        
+        if [ -z "$sourceBranch" ]; then
+          echo "Error: sourceBranch is empty!"
+          exit 1
+        fi
+
         echo "Creating PR from $sourceBranch to master"
         az repos pr create --organization https://dev.azure.com/kamilsaiyed \
                            --project "KamilSaiyed" \
