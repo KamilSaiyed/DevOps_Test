@@ -4,33 +4,38 @@ trigger:
 pool:
   name: 'Self-hosted'
 
+variables:
+  - group: ServicePrincipalSecrets
+
 steps:
   - script: |
       echo "This is a dummy file" > dummy.txt
     displayName: 'Create Dummy File'
-
+    
   - task: Bash@3
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
     inputs:
       targetType: 'inline'
       script: |
-        echo "Running az login with AZURE_DEVOPS_EXT_PAT"
+        echo "Running az login with System.AccessToken"
         az extension add --name azure-devops
-        sourceBranch=$(Build.SourceBranchName)
-        echo "Detected source branch: $sourceBranch"
-        
-        if [ -z "$sourceBranch" ]; then
-          echo "Error: sourceBranch is empty!"
-          exit 1
-        fi
 
-        echo "Creating PR from $sourceBranch to master"
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed \
+        # Capturing the source branch and removing 'refs/heads/'
+        sourceBranch="$(Build.SourceBranch)"
+        sourceBranch=${sourceBranch#refs/heads/}
+        
+        targetBranch="master"
+
+        echo "Source Branch: $sourceBranch"
+        echo "Target Branch: $targetBranch"
+
+        # Creating the PR dynamically
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
                            --project "KamilSaiyed" \
                            --repository "KamilSaiyed" \
                            --source-branch "$sourceBranch" \
-                           --target-branch "master" \
+                           --target-branch "$targetBranch" \
                            --title "Automated PR for $sourceBranch" \
                            --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
