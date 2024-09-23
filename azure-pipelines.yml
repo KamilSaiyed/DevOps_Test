@@ -4,8 +4,8 @@ trigger:
 pool:
   name: 'Self-hosted'
 
-variables:
-  - group: ServicePrincipalSecrets
+# variables:
+#   - group: ServicePrincipalSecrets
 
 steps:
   - script: |
