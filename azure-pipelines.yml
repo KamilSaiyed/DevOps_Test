@@ -11,24 +11,15 @@ steps:
   - script: |
       echo "This is a dummy file" > dummy.txt
     displayName: 'Create Dummy File'
-  - task: AzureCLI@2
+  - task: Bash@3
     env:
-      AZURE_DEVOPS_EXT_PAT: $(PAT)
+      AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
     inputs:
-      azureSubscription: 'serviceconnection_01'
-      scriptType: 'ps'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-        
+      targetType: 'inline'
+      script: |
+        echo " running az login with AZURE_DEVOPS_EXT_PAT"
+        #az login --service-principal -u $(APP_ID) --password $(CLIENT_SECRET) --tenant $(TENANT_ID)
+        #az login
         az extension add --name azure-devops
-        
-        $sourceBranch = "$(Build.SourceBranch)"
-        $sourceBranch = $sourceBranch -replace '^refs/heads/', ''
-        
-        $targetBranch = "master"
-
-        echo "Source Branch: $sourceBranch"
-        echo "Target Branch: $targetBranch"
-
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ --project KamilSaiyed --repository KamilSaiyed --source-branch $sourceBranch --target-branch $targetBranch --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
+        az repos pr create --organization https://dev.azure.com/kamilsaiyed --project "KamilSaiyed" --repository "KamilSaiyed" --source-branch "kamilsaiyed/OneBranch_Test" --target-branch "master" --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
