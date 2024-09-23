@@ -18,8 +18,6 @@ steps:
       targetType: 'inline'
       script: |
         echo " running az login with AZURE_DEVOPS_EXT_PAT"
-        #az login --service-principal -u $(APP_ID) --password $(CLIENT_SECRET) --tenant $(TENANT_ID)
-        #az login
         az extension add --name azure-devops
         az repos pr create --organization https://dev.azure.com/kamilsaiyed --project "KamilSaiyed" --repository "KamilSaiyed" --source-branch "kamilsaiyed/OneBranch_Test" --target-branch "master" --title "Automated PR for $sourceBranch" --description "This PR was created by the pipeline."
     displayName: 'Create Pull Request'
