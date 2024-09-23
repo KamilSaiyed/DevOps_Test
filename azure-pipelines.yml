@@ -4,9 +4,6 @@ trigger:
 pool:
   name: 'Self-hosted'
 
-# variables:
-#   - group: ServicePrincipalSecrets
-
 steps:
   - script: |
       echo "This is a dummy file" > dummy.txt
