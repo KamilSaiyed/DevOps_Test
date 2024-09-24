@@ -3,12 +3,13 @@ trigger:
 
 pool:
   name: 'Self-hosted'
-  
+
 steps:
   - script: |
+      echo "This is a dummy file" > dummy.txt
       echo "This is an updated dummy file" > dummy.txt
     displayName: 'Create Dummy File'
-    
+
   - task: Bash@3
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
@@ -18,43 +19,38 @@ steps:
         echo "Running az login with System.AccessToken"
         az extension add --name azure-devops
 
-        # Capturing the source branch and removing 'refs/heads/'
         sourceBranch="$(Build.SourceBranch)"
         sourceBranch=${sourceBranch#refs/heads/}
         
         targetBranch="master"
 
-        # Get current timestamp in Pacific Time (PST/PDT - Seattle, WA)
-        timestamp=$(TZ="America/Los_Angeles" date +'%Y-%m-%d %H:%M:%S %Z')
-
+        timestamp=$(date +'%Y-%m-%d %H:%M:%S')
         echo "Source Branch: $sourceBranch"
         echo "Target Branch: $targetBranch"
-        echo "Current Timestamp (PST - Seattle, WA): $timestamp"
+        echo "Current Timestamp: $timestamp"
 
-        # Check if an active pull request exists
-        existingPR=$(az repos pr list --organization https://dev.azure.com/msazure/ \
-                                      --project "One" \
-                                      --repository "Azure-Compute-VMHWTools" \
+        existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
+                                      --project "KamilSaiyed" \
+                                      --repository "KamilSaiyed" \
                                       --source-branch "$sourceBranch" \
                                       --target-branch "$targetBranch" \
                                       --status "active" \
                                       --query '[0].pullRequestId' \
                                       --output tsv)
-
         if [[ -n "$existingPR" ]]; then
           echo "Updating existing pull request with ID: $existingPR"
-          az repos pr update --organization https://dev.azure.com/msazure/ \
+          az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
                              --id "$existingPR" \
                              --title "Updated PR for $sourceBranch at $timestamp" \
                              --description "This PR was updated by the pipeline at $timestamp."
         else
           echo "No active PR found. Creating a new one."
-          az repos pr create --organization https://dev.azure.com/msazure/ \
-                             --project "One" \
-                             --repository "Azure-Compute-VMHWTools" \
+          az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
+                             --project "KamilSaiyed" \
+                             --repository "KamilSaiyed" \
                              --source-branch "$sourceBranch" \
                              --target-branch "$targetBranch" \
-                             --title "Automated PR by Pipeline for $sourceBranch" \
+                             --title "Automated PR for $sourceBranch at $timestamp" \
                              --description "This PR was created by the pipeline at $timestamp."
         fi
     displayName: 'Update or Create Pull Request'
