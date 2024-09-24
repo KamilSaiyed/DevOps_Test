@@ -41,21 +41,19 @@ steps:
                                       --output tsv)
 
         if [[ -n "$existingPR" ]]; then
-          echo "Closing existing pull request with ID: $existingPR"
+          echo "Updating existing pull request with ID: $existingPR"
           az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
                              --id "$existingPR" \
-                             --status "abandoned"
+                             --title "Updated PR for $sourceBranch" \
+                             --description "This PR was updated by the pipeline."
         else
-          echo "No active PR found."
+          echo "No active PR found. Creating a new one."
+          az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
+                             --project "KamilSaiyed" \
+                             --repository "KamilSaiyed" \
+                             --source-branch "$sourceBranch" \
+                             --target-branch "$targetBranch" \
+                             --title "Automated PR for $sourceBranch" \
+                             --description "This PR was created by the pipeline."
         fi
-
-        # Create a new pull request after closing the existing one (if any)
-        echo "Creating a new pull request."
-        az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
-                           --project "KamilSaiyed" \
-                           --repository "KamilSaiyed" \
-                           --source-branch "$sourceBranch" \
-                           --target-branch "$targetBranch" \
-                           --title "Automated PR for $sourceBranch" \
-                           --description "This PR was created by the pipeline."
-    displayName: 'Close Existing and Create New Pull Request'
+    displayName: 'Update or Create Pull Request'
