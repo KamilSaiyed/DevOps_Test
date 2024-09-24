@@ -2,7 +2,7 @@ trigger:
   - 'None'
 
 pool:
-  name: 'Self-hosted'
+  vmImage: 'windows-latest'
 
 steps:
   - script: |
@@ -24,17 +24,17 @@ steps:
         
         targetBranch="master"
 
-        # Get current timestamp
-        timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+        # Get current timestamp in Pacific Time (PST/PDT - Seattle, WA)
+        timestamp=$(TZ="America/Los_Angeles" date +'%Y-%m-%d %H:%M:%S %Z')
 
         echo "Source Branch: $sourceBranch"
         echo "Target Branch: $targetBranch"
-        echo "Current Timestamp: $timestamp"
+        echo "Current Timestamp (PST - Seattle, WA): $timestamp"
 
         # Check if an active pull request exists
-        existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
-                                      --project "KamilSaiyed" \
-                                      --repository "KamilSaiyed" \
+        existingPR=$(az repos pr list --organization https://dev.azure.com/msazure/ \
+                                      --project "One" \
+                                      --repository "Azure-Compute-VMHWTools" \
                                       --source-branch "$sourceBranch" \
                                       --target-branch "$targetBranch" \
                                       --status "active" \
@@ -43,18 +43,18 @@ steps:
 
         if [[ -n "$existingPR" ]]; then
           echo "Updating existing pull request with ID: $existingPR"
-          az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
+          az repos pr update --organization https://dev.azure.com/msazure/ \
                              --id "$existingPR" \
                              --title "Updated PR for $sourceBranch at $timestamp" \
                              --description "This PR was updated by the pipeline at $timestamp."
         else
           echo "No active PR found. Creating a new one."
-          az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
-                             --project "KamilSaiyed" \
-                             --repository "KamilSaiyed" \
+          az repos pr create --organization https://dev.azure.com/msazure/ \
+                             --project "One" \
+                             --repository "Azure-Compute-VMHWTools" \
                              --source-branch "$sourceBranch" \
                              --target-branch "$targetBranch" \
-                             --title "Automated PR for $sourceBranch at $timestamp" \
+                             --title "Automated PR by Pipeline for $sourceBranch" \
                              --description "This PR was created by the pipeline at $timestamp."
         fi
-    displayName: 'Update or Create Pull Requestssssssss'
+    displayName: 'Update or Create Pull Request'
