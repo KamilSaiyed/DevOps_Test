@@ -30,7 +30,28 @@ steps:
         echo "Source Branch: $sourceBranch"
         echo "Target Branch: $targetBranch"
 
-        # Creating the PR dynamically
+        # Check if an active pull request exists
+        existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
+                                      --project "KamilSaiyed" \
+                                      --repository "KamilSaiyed" \
+                                      --source-branch "$sourceBranch" \
+                                      --target-branch "$targetBranch" \
+                                      --status "active" \
+                                      --query '[0].pullRequestId' \
+                                      --output tsv)
+
+        if [[ -n "$existingPR" ]]; then
+          echo "Closing existing pull request with ID: $existingPR"
+          az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
+                             --project "KamilSaiyed" \
+                             --pull-request-id "$existingPR" \
+                             --status "abandoned"
+        else
+          echo "No active PR found."
+        fi
+
+        # Create a new pull request after closing the existing one (if any)
+        echo "Creating a new pull request."
         az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
                            --project "KamilSaiyed" \
                            --repository "KamilSaiyed" \
@@ -38,4 +59,4 @@ steps:
                            --target-branch "$targetBranch" \
                            --title "Automated PR for $sourceBranch" \
                            --description "This PR was created by the pipeline."
-    displayName: 'Create Pull Request'
+    displayName: 'Close Existing and Create New Pull Request'
