@@ -12,13 +12,16 @@ steps:
   - checkout: self
     displayName: 'Checkout Repository'
 
-  # Step to update a dummy file with timestamp
-  - script: |
-      cd $(Build.SourcesDirectory) # Ensure we are in the repository directory
-      echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
+  # Step to update a dummy file with timestamp using Bash on Windows
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+        cd $(Build.SourcesDirectory) # Ensure we are in the repository directory
+        echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
     displayName: 'Update Dummy File with Timestamp'
 
-  # Commit the updated dummy file
+  # Commit the updated dummy file using Bash on Windows
   - task: Bash@3
     inputs:
       targetType: 'inline'
@@ -29,10 +32,10 @@ steps:
         
         git add dummy.txt
         git commit -m "Updated dummy file at $(date +'%Y-%m-%d %H:%M:%S')"
-        git push origin "$(Build.SourceBranch)"
+        git push origin $(Build.SourceBranch)
     displayName: 'Commit and Push Changes'
 
-  # Task to check and update/create PR
+  # Task to check and update/create PR using Bash on Windows
   - task: Bash@3
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
