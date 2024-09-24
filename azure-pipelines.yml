@@ -9,7 +9,7 @@ variables:
 
 steps:
   - script: |
-      echo "This is a dummy file" > dummy.txt
+      echo "This is an updated dummy file" > dummy.txt
     displayName: 'Create Dummy File'
     
   - task: Bash@3
