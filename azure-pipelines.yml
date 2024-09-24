@@ -12,23 +12,23 @@ steps:
   - checkout: self
     displayName: 'Checkout Repository'
 
-  # Step to update a dummy file with timestamp using Bash in WSL
+  # Step to update a dummy file with timestamp using Bash on WSL/Windows
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
-        # Convert Windows-style path to WSL path
-        repo_dir=$(cygpath -u "$(Build.SourcesDirectory)")
+        # Convert Windows-style path (C:) to WSL-compatible path (/mnt/c)
+        repo_dir=$(echo "$BUILD_SOURCESDIRECTORY" | sed 's#C:#/mnt/c#g' | tr '\\' '/')
         cd "$repo_dir" # Ensure we are in the repository directory
         echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
     displayName: 'Update Dummy File with Timestamp'
 
-  # Commit the updated dummy file using Bash in WSL
+  # Commit the updated dummy file using Bash on WSL/Windows
   - task: Bash@3
     inputs:
       targetType: 'inline'
       script: |
-        repo_dir=$(cygpath -u "$(Build.SourcesDirectory)")
+        repo_dir=$(echo "$BUILD_SOURCESDIRECTORY" | sed 's#C:#/mnt/c#g' | tr '\\' '/')
         cd "$repo_dir" # Ensure we are in the repository directory
         git config --global user.email "your-email@example.com"
         git config --global user.name "Your Name"
@@ -38,7 +38,7 @@ steps:
         git push origin $(Build.SourceBranch)
     displayName: 'Commit and Push Changes'
 
-  # Task to check and update/create PR using Bash in WSL
+  # Task to check and update/create PR using Bash on WSL/Windows
   - task: Bash@3
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
