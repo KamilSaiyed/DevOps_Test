@@ -32,7 +32,6 @@ steps:
 
         # Check if an active pull request exists
         existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
-                                      --project "KamilSaiyed" \
                                       --repository "KamilSaiyed" \
                                       --source-branch "$sourceBranch" \
                                       --target-branch "$targetBranch" \
@@ -43,7 +42,6 @@ steps:
         if [[ -n "$existingPR" ]]; then
           echo "Closing existing pull request with ID: $existingPR"
           az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
-                             --project "KamilSaiyed" \
                              --id "$existingPR" \
                              --status "abandoned"
         else
