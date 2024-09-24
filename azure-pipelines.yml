@@ -4,7 +4,14 @@ trigger:
 pool:
   name: 'Self-hosted'
 
+variables:
+  - group: ServicePrincipalSecrets
+
 steps:
+  # Ensure that the repository is checked out
+  - checkout: self
+    displayName: 'Checkout Repository'
+
   # Step to update a dummy file with timestamp
   - script: |
       echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
