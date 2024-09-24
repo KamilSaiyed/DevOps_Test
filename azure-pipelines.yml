@@ -32,6 +32,7 @@ steps:
 
         # Check if an active pull request exists
         existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
+                                      --project "KamilSaiyed" \
                                       --repository "KamilSaiyed" \
                                       --source-branch "$sourceBranch" \
                                       --target-branch "$targetBranch" \
