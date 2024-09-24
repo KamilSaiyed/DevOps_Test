@@ -2,8 +2,8 @@ trigger:
   - 'None'
 
 pool:
-  vmImage: 'windows-latest'
-
+  name: 'Self-hosted'
+  
 steps:
   - script: |
       echo "This is an updated dummy file" > dummy.txt
