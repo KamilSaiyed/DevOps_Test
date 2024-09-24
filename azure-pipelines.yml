@@ -14,6 +14,7 @@ steps:
 
   # Step to update a dummy file with timestamp
   - script: |
+      cd $(Build.SourcesDirectory) # Ensure we are in the repository directory
       echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
     displayName: 'Update Dummy File with Timestamp'
 
@@ -22,6 +23,7 @@ steps:
     inputs:
       targetType: 'inline'
       script: |
+        cd $(Build.SourcesDirectory) # Ensure we are in the repository directory
         git config --global user.email "your-email@example.com"
         git config --global user.name "Your Name"
         
