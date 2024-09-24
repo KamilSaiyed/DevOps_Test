@@ -44,7 +44,7 @@ steps:
           echo "Closing existing pull request with ID: $existingPR"
           az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
                              --project "KamilSaiyed" \
-                             --pull-request-id "$existingPR" \
+                             --id "$existingPR" \
                              --status "abandoned"
         else
           echo "No active PR found."
