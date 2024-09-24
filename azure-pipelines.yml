@@ -4,12 +4,9 @@ trigger:
 pool:
   name: 'Self-hosted'
 
-variables:
-  - group: ServicePrincipalSecrets
-
 steps:
   - script: |
-      echo "This is a dummy file" > dummy.txt
+      echo "This is an updated dummy file" > dummy.txt
     displayName: 'Create Dummy File'
     
   - task: Bash@3
@@ -60,4 +57,4 @@ steps:
                              --title "Automated PR for $sourceBranch at $timestamp" \
                              --description "This PR was created by the pipeline at $timestamp."
         fi
-    displayName: 'Update or Create Pull Request'
+    displayName: 'Update or Create Pull Requestssssssss'
