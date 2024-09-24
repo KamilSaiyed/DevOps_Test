@@ -8,37 +8,10 @@ variables:
   - group: ServicePrincipalSecrets
 
 steps:
-  # Ensure that the repository is checked out
-  - checkout: self
-    displayName: 'Checkout Repository'
-
-  # Step to update a dummy file with timestamp using Bash on WSL/Windows
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        # Convert Windows-style path (C:) to WSL-compatible path (/mnt/c)
-        repo_dir=$(echo "$BUILD_SOURCESDIRECTORY" | sed 's#C:#/mnt/c#g' | tr '\\' '/')
-        cd "$repo_dir" # Ensure we are in the repository directory
-        echo "This is a dummy file updated at $(date +'%Y-%m-%d %H:%M:%S')" >> dummy.txt
-    displayName: 'Update Dummy File with Timestamp'
-
-  # Commit the updated dummy file using Bash on WSL/Windows
-  - task: Bash@3
-    inputs:
-      targetType: 'inline'
-      script: |
-        repo_dir=$(echo "$BUILD_SOURCESDIRECTORY" | sed 's#C:#/mnt/c#g' | tr '\\' '/')
-        cd "$repo_dir" # Ensure we are in the repository directory
-        git config --global user.email "your-email@example.com"
-        git config --global user.name "Your Name"
-        
-        git add dummy.txt
-        git commit -m "Updated dummy file at $(date +'%Y-%m-%d %H:%M:%S')"
-        git push origin $(Build.SourceBranch)
-    displayName: 'Commit and Push Changes'
-
-  # Task to check and update/create PR using Bash on WSL/Windows
+  - script: |
+      echo "This is a dummy file" > dummy.txt
+    displayName: 'Create Dummy File'
+    
   - task: Bash@3
     env:
       AZURE_DEVOPS_EXT_PAT: $(System.AccessToken)
@@ -86,4 +59,5 @@ steps:
                              --target-branch "$targetBranch" \
                              --title "Automated PR for $sourceBranch at $timestamp" \
                              --description "This PR was created by the pipeline at $timestamp."
+        fi
     displayName: 'Update or Create Pull Request'
