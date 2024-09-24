@@ -27,8 +27,12 @@ steps:
         
         targetBranch="master"
 
+        # Get current timestamp
+        timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+
         echo "Source Branch: $sourceBranch"
         echo "Target Branch: $targetBranch"
+        echo "Current Timestamp: $timestamp"
 
         # Check if an active pull request exists
         existingPR=$(az repos pr list --organization https://dev.azure.com/kamilsaiyed/ \
@@ -44,8 +48,8 @@ steps:
           echo "Updating existing pull request with ID: $existingPR"
           az repos pr update --organization https://dev.azure.com/kamilsaiyed/ \
                              --id "$existingPR" \
-                             --title "Updated PR for $sourceBranch" \
-                             --description "This PR was updated by the pipeline."
+                             --title "Updated PR for $sourceBranch at $timestamp" \
+                             --description "This PR was updated by the pipeline at $timestamp."
         else
           echo "No active PR found. Creating a new one."
           az repos pr create --organization https://dev.azure.com/kamilsaiyed/ \
@@ -53,7 +57,7 @@ steps:
                              --repository "KamilSaiyed" \
                              --source-branch "$sourceBranch" \
                              --target-branch "$targetBranch" \
-                             --title "Automated PR for $sourceBranch" \
-                             --description "This PR was created by the pipeline."
+                             --title "Automated PR for $sourceBranch at $timestamp" \
+                             --description "This PR was created by the pipeline at $timestamp."
         fi
     displayName: 'Update or Create Pull Request'
